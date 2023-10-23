@@ -25,7 +25,7 @@ class Toolkit(BaseToolkit):
     
         return api_key, access_token
     
-    def _get_workflows_from_file(tools_list: List[Tool]) -> List[Workflow]:
+    def _get_workflows_from_file(self) -> List[Workflow]:
         workflows = []
 
         with open("lemonai.json", "r") as file:
@@ -42,8 +42,8 @@ class Toolkit(BaseToolkit):
                         ignore = True
                         break
                     else:
-                        tools_objs.append(tools_list[index])
-                
+                        tools_objs.append(self[index])
+
                 if not ignore:
                     tool_names = [tool.name for tool in tools_objs]
                     workflows.append(
@@ -55,8 +55,8 @@ class Toolkit(BaseToolkit):
 
         return workflows
 
-    def _build_workflow_description(name: str, description: str, tool_names: List[str]) -> str:
-        return f"A wrapper around Lemon AI workflows. To run this workflow, run each tool in the workflow's tools list in the correct order to achieve the goal given by the workflow's description. You MUST take into account the params when executing each stage of the workflow. Sometimes, but not always, the output from a tool in the workflow may need to be used as the param for another tool in the workflow. For example, if the workflow's description is \"send the latest weather information in an email to maria.musterfrau@gmail.com\", first you would need to retrieve the latest weather information using one tool and then send that tool's output in an email to the given recipient, using the weather information as a param for the tool to send the email. You MUST use every tool that is given in the workflow's tools list once and in the same order as the list. Do not make up params, they will be explicitly specified in each tool's description. Do not use any tools that are not in this workflow's tools list. If you do not have enough information to fill in the params for a tool, just say 'not enough information provided in the instruction, missing <param>'. If you get a null or none response, STOP EXECUTION, do not try another tool! This workflow is named:{name} and has the goal:{description} and this workflow's tools list is: {tool_names}" 
+    def _build_workflow_description(self, description: str, tool_names: List[str]) -> str:
+        return f"""A wrapper around Lemon AI workflows. To run this workflow, run each tool in the workflow's tools list in the correct order to achieve the goal given by the workflow's description. You MUST take into account the params when executing each stage of the workflow. Sometimes, but not always, the output from a tool in the workflow may need to be used as the param for another tool in the workflow. For example, if the workflow's description is \"send the latest weather information in an email to maria.musterfrau@gmail.com\", first you would need to retrieve the latest weather information using one tool and then send that tool's output in an email to the given recipient, using the weather information as a param for the tool to send the email. You MUST use every tool that is given in the workflow's tools list once and in the same order as the list. Do not make up params, they will be explicitly specified in each tool's description. Do not use any tools that are not in this workflow's tools list. If you do not have enough information to fill in the params for a tool, just say 'not enough information provided in the instruction, missing <param>'. If you get a null or none response, STOP EXECUTION, do not try another tool! This workflow is named:{self} and has the goal:{description} and this workflow's tools list is: {tool_names}""" 
 
     @classmethod
     def from_api_wrapper(

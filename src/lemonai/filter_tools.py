@@ -12,6 +12,4 @@ def filter_tools(llm: BaseLLM, task: str, tools: List[Tool]) -> List[Tool]:
 
     filtered_tool_names = eval(list_string)
 
-    filtered_tools = list(filter(lambda x: x.name in filtered_tool_names, tools))
-
-    return filtered_tools
+    return list(filter(lambda x: x.name in filtered_tool_names, tools))

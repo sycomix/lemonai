@@ -38,7 +38,7 @@ class APIWrapper:
         
         data = params if params else {}
         if action_input[-1] == ":":
-            action_input = action_input + "\"\""
+            action_input += "\"\""
         json_obj = json.loads(action_input.replace("'", "\"").replace("None", "\"\""))
 
         data.update(json_obj)
